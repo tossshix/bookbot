@@ -38,6 +38,17 @@ async def process_beginning_command(message: Message):
             'forward'))
 
 
+@router.message(Command(commands='continue'))
+async def process_continue_command(message: Message):
+    text = book[users_db[message.from_user.id]['page']]
+    await message.answer(
+        text=text,
+        reply_markup=create_pagination_keyboard(
+            'backward',
+            f'{users_db[message.from_user.id]["page"]}/{len(book)}',
+            'forward'))
+
+
 @router.message(Command(commands='bookmarks'))
 async def process_bookmark_command(message: Message):
     if users_db[message.from_user.id]['bookmarks']:
@@ -57,7 +68,7 @@ async def process_forward_press(callback: CallbackQuery):
             text=text,
             reply_markup=create_pagination_keyboard(
                 'backward',
-                f'{users_db[callback.message.from_user.id]["page"]}/{len(book)}',
+                f'{users_db[callback.from_user.id]["page"]}/{len(book)}',
                 'forward'))
     await callback.answer()
 
@@ -71,7 +82,7 @@ async def process_backward_press(callback: CallbackQuery):
             text=text,
             reply_markup=create_pagination_keyboard(
                 'backward',
-                f'{users_db[callback.message.from_user.id]["page"]}/{len(book)}',
+                f'{users_db[callback.from_user.id]["page"]}/{len(book)}',
                 'forward'))
     await callback.answer()
 
@@ -90,7 +101,7 @@ async def process_bookmark_press(callback: CallbackQuery):
         text=text,
         reply_markup=create_pagination_keyboard(
                 'backward',
-                f'{users_db[callback.message.from_user.id]["page"]}/{len(book)}',
+                f'{users_db[callback.from_user.id]["page"]}/{len(book)}',
                 'forward'))
     await callback.answer()
 
@@ -110,7 +121,7 @@ async def process_cancel_press(callback: CallbackQuery):
     await callback.answer()
 
 
-@router.callback_query(IsDelBookmarkCallbackData)
+@router.callback_query(IsDelBookmarkCallbackData())
 async def process_del_bookmark_press(callback: CallbackQuery):
     users_db[callback.from_user.id]['bookmarks'].remove(int(callback.data[:-3]))
     if users_db[callback.from_user.id]['bookmarks']:
