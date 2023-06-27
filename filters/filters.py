@@ -10,4 +10,4 @@ class IsDigitCallbackData(BaseFilter):
 
 class IsDelBookmarkCallbackData(BaseFilter):
     async def __call__(self, callback: CallbackQuery) -> bool:
-        return isinstance(callback.data, str) and 'del' in callback.data and callback[:-3].isdigit()
+        return isinstance(callback.data, str) and 'del' in callback.data and callback.data[:-3].isdigit()
