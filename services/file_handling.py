@@ -4,6 +4,7 @@ PAGE_SIZE = 1050
 
 book: dict[int, str] = {}
 
+
 def _get_part_text(text: str, start: int, size: int) -> tuple[str, int]:
     end_signs = ',.!:;?'
     counter = 0
@@ -11,7 +12,7 @@ def _get_part_text(text: str, start: int, size: int) -> tuple[str, int]:
         size = len(text) - start
         text = text[start: start+size]
     else:
-        if text[start + size] == '.' and text[start + size -1] in end_signs:
+        if text[start + size] == '.' and text[start + size - 1] in end_signs:
             text = text[start:start + size - 2]
             size -= 2
         else:
@@ -20,19 +21,19 @@ def _get_part_text(text: str, start: int, size: int) -> tuple[str, int]:
             if text[i] in end_signs:
                 break
             counter = size - i
-        page_text = text[:size - counter]
-        page_size = size - counter
-        return page_text, page_size
+    page_text = text[:size - counter]
+    page_size = size - counter
+    return page_text, page_size
 
 
 def prepare_book(path: str) -> None:
-    with open(path, 'r') as file:
+    with open(path, 'r', encoding='utf-8') as file:
         text = file.read()
     start, page_number = 0, 1
     while start < len(text):
         page_text, page_size = _get_part_text(text, start, PAGE_SIZE)
         start += page_size
-        book[page_number] = page_text
+        book[page_number] = page_text.strip()
         page_number += 1
 
 
